@@ -26,29 +26,35 @@ import android.os.Parcel;
 import android.os.SystemProperties;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.SignalStrength;
+import com.android.internal.telephony.cdma.CdmaInformationRecords;
+import com.android.internal.telephony.cdma.CdmaInformationRecords.CdmaSignalInfoRec;
+import com.android.internal.telephony.cdma.SignalToneUtil;
 import com.android.internal.telephony.uicc.IccCardApplicationStatus;
 import com.android.internal.telephony.uicc.IccCardStatus;
 import java.util.ArrayList;
 import java.util.Collections;
 
 /**
- * Qualcomm RIL for Samsung MSM8916 (3G) devices
+ * RIL customization for MSM8916 devices
+ *
  * {@hide}
  */
 public class SamsungQcom3GDSRIL extends RIL {
 
     private static final int RIL_REQUEST_DIAL_EMERGENCY = 10001;
     private static final int RIL_UNSOL_ON_SS_LL = 11055;
+    
+    private boolean setPreferredNetworkTypeSeen = false;
 
-    public SamsungQcom3GDSRIL(Context context, int networkMode, int cdmaSubscription) {
-        super(context, networkMode, cdmaSubscription, null);
-        mQANElements = 6;
+    private boolean mIsGsm = false;
+
+    public SamsungQcom3GDSRIL(Context context, int preferredNetworkType, int cdmaSubscription) {
+        super(context, preferredNetworkType, cdmaSubscription, null);
     }
 
     public SamsungQcom3GDSRIL(Context context, int preferredNetworkType,
             int cdmaSubscription, Integer instanceId) {
         super(context, preferredNetworkType, cdmaSubscription, instanceId);
-        mQANElements = 6;
     }
 
     @Override
@@ -84,7 +90,7 @@ public class SamsungQcom3GDSRIL extends RIL {
     @Override
     protected Object
     responseIccCardStatus(Parcel p) {
-        IccCardApplicationStatus appStatus;
+        IccCardApplicationStatus appStatus = null;
 
         IccCardStatus cardStatus = new IccCardStatus();
         cardStatus.setCardState(p.readInt());
@@ -119,6 +125,40 @@ public class SamsungQcom3GDSRIL extends RIL {
 
             cardStatus.mApplications[i] = appStatus;
         }
+
+        // For Sprint LTE only SIM
+        if (appStatus != null
+                && numApplications == 1
+                && !mIsGsm
+                && appStatus.app_type == appStatus.AppTypeFromRILInt(2)) {
+            cardStatus.mApplications = new IccCardApplicationStatus[3];
+            cardStatus.mApplications[0] = appStatus;
+            cardStatus.mGsmUmtsSubscriptionAppIndex = 0;
+            cardStatus.mCdmaSubscriptionAppIndex = 1;
+            cardStatus.mImsSubscriptionAppIndex = 2;
+
+            IccCardApplicationStatus appStatus2 = new IccCardApplicationStatus();
+            appStatus2.app_type       = appStatus2.AppTypeFromRILInt(4); // csim state
+            appStatus2.app_state      = appStatus.app_state;
+            appStatus2.perso_substate = appStatus.perso_substate;
+            appStatus2.aid            = appStatus.aid;
+            appStatus2.app_label      = appStatus.app_label;
+            appStatus2.pin1_replaced  = appStatus.pin1_replaced;
+            appStatus2.pin1           = appStatus.pin1;
+            appStatus2.pin2           = appStatus.pin2;
+            cardStatus.mApplications[cardStatus.mCdmaSubscriptionAppIndex] = appStatus2;
+
+            IccCardApplicationStatus appStatus3 = new IccCardApplicationStatus();
+            appStatus3.app_type       = appStatus3.AppTypeFromRILInt(5); // ims state
+            appStatus3.app_state      = appStatus.app_state;
+            appStatus3.perso_substate = appStatus.perso_substate;
+            appStatus3.aid            = appStatus.aid;
+            appStatus3.app_label      = appStatus.app_label;
+            appStatus3.pin1_replaced  = appStatus.pin1_replaced;
+            appStatus3.pin1           = appStatus.pin1;
+            appStatus3.pin2           = appStatus.pin2;
+            cardStatus.mApplications[cardStatus.mImsSubscriptionAppIndex] = appStatus3;
+        }
         return cardStatus;
     }
 
@@ -148,8 +188,7 @@ public class SamsungQcom3GDSRIL extends RIL {
             dc.isMT = (0 != p.readInt());
             dc.als = p.readInt();
             voiceSettings = p.readInt();
-            dc.isVoice = (0 == voiceSettings) ? false : true;
-            boolean isVideo;
+            dc.isVoice = (0 != voiceSettings);
             int call_type = p.readInt();            // Samsung CallDetails
             int call_domain = p.readInt();          // Samsung CallDetails
             String csv = p.readString();            // Samsung CallDetails
@@ -221,7 +260,6 @@ public class SamsungQcom3GDSRIL extends RIL {
         int lteCqi = p.readInt();
         int tdScdmaRscp = p.readInt();
         // constructor sets default true, makeSignalStrengthFromRilParcel does not set it
-  	boolean isGsm = true;
 
         if ((lteSignalStrength & 0xff) == 255 || lteSignalStrength == 99) {
             lteSignalStrength = 99;
@@ -239,11 +277,36 @@ public class SamsungQcom3GDSRIL extends RIL {
                     " evdoEcio: " + evdoEcio + " evdoSnr:" + evdoSnr +
                     " lteSignalStrength:" + lteSignalStrength + " lteRsrp:" + lteRsrp +
                     " lteRsrq:" + lteRsrq + " lteRssnr:" + lteRssnr + " lteCqi:" + lteCqi +
-                    " tdScdmaRscp:" + tdScdmaRscp + " isGsm:" + (isGsm ? "true" : "false"));
+                    " tdScdmaRscp:" + tdScdmaRscp + " isGsm:" + (mIsGsm ? "true" : "false"));
 
         return new SignalStrength(gsmSignalStrength, gsmBitErrorRate, cdmaDbm, cdmaEcio, evdoDbm,
                 evdoEcio, evdoSnr, lteSignalStrength, lteRsrp, lteRsrq, lteRssnr, lteCqi,
-                tdScdmaRscp, isGsm);
+                tdScdmaRscp, mIsGsm);
+    }
+
+    @Override
+    protected void notifyRegistrantsCdmaInfoRec(CdmaInformationRecords infoRec) {
+        final int response = RIL_UNSOL_CDMA_INFO_REC;
+
+        if (infoRec.record instanceof CdmaSignalInfoRec) {
+            CdmaSignalInfoRec rec = (CdmaSignalInfoRec) infoRec.record;
+            if (rec != null
+                    && rec.isPresent
+                    && rec.signalType == SignalToneUtil.IS95_CONST_IR_SIGNAL_IS54B
+                    && rec.alertPitch == SignalToneUtil.IS95_CONST_IR_ALERT_MED
+                    && rec.signal == SignalToneUtil.IS95_CONST_IR_SIG_IS54B_L) {
+                /* Drop record, otherwise IS95_CONST_IR_SIG_IS54B_L tone will
+                 * continue to play after the call is connected */
+                return;
+            }
+        }
+        super.notifyRegistrantsCdmaInfoRec(infoRec);
+    }
+
+    @Override
+    public void setPhoneType(int phoneType) {
+        super.setPhoneType(phoneType);
+        mIsGsm = (phoneType != RILConstants.CDMA_PHONE);
     }
 
     @Override
@@ -280,6 +343,7 @@ public class SamsungQcom3GDSRIL extends RIL {
 
         send(rr);
     }
+
 
     private void
     dialEmergencyCall(String address, int clirMode, Message result) {
@@ -370,4 +434,27 @@ public class SamsungQcom3GDSRIL extends RIL {
         }
         return response;
     }
+    
+    @Override
+     public void getRadioCapability(Message response) {
+         riljLog("getRadioCapability: returning static radio capability");
+         if (response != null) {
+             Object ret = makeStaticRadioCapability();
+             AsyncResult.forMessage(response, ret, null);
+             response.sendToTarget();
+         }
+     }
+     
+     @Override
+     public void setPreferredNetworkType(int networkType , Message response) {
+         riljLog("setPreferredNetworkType: " + networkType);
+ 
+         if (!setPreferredNetworkTypeSeen) {
+             riljLog("Need to reboot modem!");
+             setRadioPower(false, null);
+             setPreferredNetworkTypeSeen = true;
+         }
+ 
+         super.setPreferredNetworkType(networkType, response);
+     }
 }
