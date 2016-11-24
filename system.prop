@@ -17,6 +17,10 @@ ro.telephony.ril_class=SamsungQcom3GDSRIL
 telephony.lteOnGsmDevice=0
 persist.radio.apm_sim_not_pwdn=1
 persist.radio.add_power_save=1
+ro.ril.multi_rat_capable=false
+persist.radio.flexmap_type=nw_mode
+ro.telephony.ril.config=simactivation
+ro.ril.telephony.mqanelements=6
 
 # Data modules (For evolution RIL model)
 ro.use_data_netmgrd=false
@@ -58,6 +62,7 @@ audio.offload.buffer.size.kb=32
 audio.offload.min.duration.secs=30
 av.offload.enable=true
 af.resampler.quality=4
+vidc.enc.narrow.searchrange=1
 
 # Wi-Fi, Bluetooth
 wifi.interface=wlan0
@@ -76,13 +81,8 @@ debug.egl.hw=1
 #system props for time-services
 persist.timed.enable=true
 
-#property to enable user to access Google WFD settings
 persist.debug.wfd.enable=1
-#propery to enable VDS WFD solution
 persist.hwc.enable_vds=1
-
-#property to enable narrow search range for video encoding
-vidc.enc.narrow.searchrange=1
 
 ro.config.max_starting_bg=8
 dalvik.vm.dex2oat-swap=false
