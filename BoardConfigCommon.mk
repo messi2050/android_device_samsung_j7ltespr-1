@@ -33,6 +33,7 @@ TARGET_GLOBAL_CPPFLAGS          += -mfpu=neon -mfloat-abi=softfp
 TARGET_CPU_VARIANT              := cortex-a53
 TARGET_CPU_CORTEX_A53           := true
 ARCH_ARM_HAVE_TLS_REGISTER      := true
+ENABLE_CPUSETS                  := true
 
 # Board CFLAGS
 COMMON_GLOBAL_CFLAGS                 += -DQCOM_BSP
@@ -47,7 +48,8 @@ TARGET_USES_NEW_ION_API              := true
 TARGET_SPECIFIC_HEADER_PATH := $(LOCAL_PATH)/include
 
 # Kernel
-BOARD_CUSTOM_BOOTIMG_MK          := $(LOCAL_PATH)/mkbootimg.mk
+TARGET_KERNEL_ARCH               := arm
+BOARD_DTBTOOL_ARG                := -2
 BOARD_KERNEL_BASE                := 0x80000000
 BOARD_KERNEL_CMDLINE             := console=ttyHSL0,115200,n8 androidboot.console=ttyHSL0 androidboot.hardware=qcom msm_rtb.filter=0x3F ehci-hcd.park=3 androidboot.bootdevice=7824900.sdhci
 BOARD_KERNEL_TAGS_OFFSET         := 0x81E00000
@@ -110,13 +112,17 @@ EXTENDED_FONT_FOOTPRINT              := true
 MALLOC_IMPL                          := dlmalloc
 
 # Audio
-TARGET_QCOM_AUDIO_VARIANT            := caf
 BOARD_USES_ALSA_AUDIO                := true
+USE_CUSTOM_AUDIO_POLICY              := 1
+TARGET_USES_QCOM_MM_AUDIO            := true
+TARGET_QCOM_AUDIO_VARIANT            := caf
 
 # Charger
 BOARD_CHARGER_SHOW_PERCENTAGE        := true
 BOARD_CHARGER_ENABLE_SUSPEND         := true
 BOARD_CHARGING_MODE_BOOTING_LPM      := /sys/class/power_supply/battery/batt_lp_charging
+BACKLIGHT_PATH                       := "/sys/class/leds/lcd-backlight/brightness"
+CHARGING_ENABLED_PATH                := /sys/class/power_supply/battery/batt_lp_charging
 
 # Enable QCOM FM feature
 AUDIO_FEATURE_ENABLED_FM             := true
@@ -145,7 +151,7 @@ TARGET_PROVIDES_LIBLIGHT              := true
 
 # Media
 TARGET_QCOM_MEDIA_VARIANT             := caf
-TARGET_ENABLE_QC_AV_ENHANCEMENTS      := true
+#TARGET_ENABLE_QC_AV_ENHANCEMENTS      := true
 
 # Display
 TARGET_CONTINUOUS_SPLASH_ENABLED      := true
@@ -189,22 +195,4 @@ PRODUCT_COPY_FILES                  := $(filter-out frameworks/av/media/libeffec
 include device/qcom/sepolicy/sepolicy.mk
 
 BOARD_SEPOLICY_DIRS += \
-   device/samsung/fortunaxx-common/sepolicy
-
-BOARD_SEPOLICY_UNION += \
-    bluetooth_loader.te \
-    file_contexts \
-    mediaserver.te \
-    property_contexts \
-    system_app.te \
-    time_daemon.te \
-    vold.te \
-    bluetooth.te \
-    file.te \
-    kernel.te \
-    mm-qcamerad.te \
-    property.te \
-    rild.te \
-    system_server.te \
-    ueventd.te \
-    wcnss_service.te
+   device/samsung/fortunave3g/sepolicy
