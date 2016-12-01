@@ -1,6 +1,10 @@
 # Also get non-open-source specific aspects if available
 $(call inherit-product-if-exists, vendor/samsung/fortunaxx-common/fortunaxx-common-vendor.mk)
 
+# Screen density
+PRODUCT_AAPT_CONFIG := normal
+PRODUCT_AAPT_PREF_CONFIG := xhdpi
+
 # Common overlay
 DEVICE_PACKAGE_OVERLAYS := $(LOCAL_PATH)/overlay
 
@@ -75,6 +79,11 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/wifi/p2p_supplicant_overlay.conf:system/etc/wifi/p2p_supplicant_overlay.conf \
     $(LOCAL_PATH)/configs/wifi/wpa_supplicant_overlay.conf:system/etc/wifi/wpa_supplicant_overlay.conf
 
+# Use cm images if available, aosp ones otherwise
+PRODUCT_PACKAGES += \
+    charger_res_images \
+    cm_charger_res_images	
+
 # Doze
 PRODUCT_PACKAGES += \
     SamsungDoze
@@ -109,6 +118,10 @@ PRODUCT_PACKAGES += \
     libqservice \
     libtinyxml
 
+# libril_shim
+PRODUCT_PACKAGES += \
+    libril_shim
+
 # Power
 PRODUCT_PACKAGES += \
     power.msm8916
@@ -129,6 +142,8 @@ PRODUCT_PACKAGES += \
 
 # OMX
 PRODUCT_PACKAGES += \
+    libextmedia_jni \
+    libqcmediaplayer \
     libc2dcolorconvert \
     libOmxVidcCommon \
     libOmxVdecHevc \
@@ -148,6 +163,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_BOOT_JARS += \
     qcmediaplayer
 
+# Gello
+PRODUCT_PACKAGES += \
+    Gello
+
 # FM
 PRODUCT_PACKAGES += \
     FM2 \
@@ -160,13 +179,8 @@ PRODUCT_PACKAGES += \
     ethertypes \
     libebtc
 
-# USB
-PRODUCT_PACKAGES += \
-    com.android.future.usb.accessory
-
 # Filesystem
 PRODUCT_PACKAGES += \
-    e2fsck \
     fsck.f2fs
 
 # Live Wallpapers
@@ -186,6 +200,11 @@ PRODUCT_PACKAGES += \
     libxml2 \
     Stk \
     Stk2
+
+# Misc. libs
+PRODUCT_PACKAGES += \
+    libstlport \
+    libboringssl-compat		
 
 # SoftAP
 PRODUCT_PACKAGES += \
@@ -214,7 +233,7 @@ ADDITIONAL_DEFAULT_PROPERTIES += \
 
 # KSM
 PRODUCT_PROPERTY_OVERRIDES += \
-    ro.ksm.default=0
+    ro.ksm.default=1
 
 # These are the hardware-specific settings that are stored in system properties.
 # Note that the only such settings should be the ones that are too low-level to
@@ -234,5 +253,8 @@ $(call inherit-product, device/samsung/qcom-common/qcom-common.mk)
 
 # Dalvik heap config
 include frameworks/native/build/phone-xhdpi-1024-dalvik-heap.mk
+
+# Texture config.
+$(call inherit-product, frameworks/native/build/phone-xxhdpi-2048-hwui-memory.mk)
 
 PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
