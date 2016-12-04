@@ -27,12 +27,60 @@
 
 import init.qcom.usb.rc
 
+on enable-low-power
+
+    # Adaptive LMK
+    write /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk 1
+    write /sys/module/lowmemorykiller/parameters/vmpressure_file_min 53059
+
+    # HMP scheduler load tracking settings
+    write /proc/sys/kernel/sched_window_stats_policy 3
+    write /proc/sys/kernel/sched_ravg_hist_size 3
+
+    # HMP Task packing settings for 8916
+    write /proc/sys/kernel/sched_small_task 20
+    write /proc/sys/kernel/sched_mostly_idle_load 30
+    write /proc/sys/kernel/sched_mostly_idle_nr_run 3
+
+    # disable thermal core_control to update interactive governor settings
+    write /sys/module/msm_thermal/core_control/enabled 0
+
+    # enable governor
+    write /sys/devices/system/cpu/cpu0/online 1
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "interactive"
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 800000
+    # enable thermal core_control now
+    write /sys/module/msm_thermal/core_control/enabled 1
+
+    write /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay "25000 1094400:50000"
+    write /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load 90
+    write /sys/devices/system/cpu/cpufreq/interactive/timer_rate 30000
+    write /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq 998400
+    write /sys/devices/system/cpu/cpufreq/interactive/io_is_busy 0
+    write /sys/devices/system/cpu/cpufreq/interactive/target_loads "1 800000:85 998400:90 1094400:80"
+    write /sys/devices/system/cpu/cpufreq/interactive/min_sample_time 50000
+    write /sys/devices/system/cpu/cpufreq/interactive/max_freq_hysteresis 50000
+
+    # bring all CPUs online
+    write /sys/devices/system/cpu/cpu1/online 1
+    write /sys/devices/system/cpu/cpu2/online 1
+    write /sys/devices/system/cpu/cpu3/online 1
+
+    # Enable low power modes
+    write /sys/module/lpm_levels/parameters/sleep_disabled 0
+
+    # Update foreground and background cpusets
+    write /dev/cpuset/foreground/cpus 0-3
+    write /dev/cpuset/foreground/boost/cpus 0-3
+    write /dev/cpuset/background/cpus 0
+    write /dev/cpuset/system-background/cpus 0-1
+
 on early-init
     mkdir /firmware 0771 system system
     mkdir /firmware-modem 0771 system system
+    #mkdir /system 0777 root root
     symlink /data/tombstones /tombstones
 
-    mount debugfs debugfs /sys/kernel/debug
     write /sys/block/mmcblk0/queue/scheduler noop
 
 
@@ -40,38 +88,15 @@ on early-init
     chmod 644 /proc/cmdline
 
 on init
+    export LD_SHIM_LIBS /system/lib/libril.so|libril_shim.so:/system/lib/libcrypto.so|libboringssl-compat.so
+
     # Set permissions for persist partition
     mkdir /persist 0771 system system
 
-    mkdir /mnt/shell/emulated 0700 shell shell
-    mkdir /storage 0550 system sdcard_r
-    mkdir /storage/emulated 0555 root root
-
-    # External storage directories
-    mkdir /mnt/media_rw/sdcard0 0700 media_rw media_rw
-    mkdir /mnt/media_rw/sdcard1 0700 media_rw media_rw
-    mkdir /mnt/media_rw/usbdisk 0700 media_rw media_rw
-
-    mkdir /storage/sdcard0 0700 root root
-    mkdir /storage/sdcard1 0700 root root
-    mkdir /storage/usbdisk 0700 root root
-
-    export EXTERNAL_STORAGE /storage/emulated/legacy
-    export SECONDARY_STORAGE /storage/sdcard1:/storage/usbdisk
-    export EMULATED_STORAGE_SOURCE /mnt/shell/emulated
-    export EMULATED_STORAGE_TARGET /storage/emulated
-
     # Support legacy paths
-    symlink /storage/emulated/legacy /sdcard
-    symlink /storage/emulated/legacy /mnt/sdcard
-    symlink /storage/emulated/legacy /storage/sdcard0
-    symlink /mnt/shell/emulated/0 /storage/emulated/legacy
-    symlink /storage/sdcard1 /extSdCard
-    symlink /storage/sdcard1 /mnt/extSdCard
-    symlink /storage/sdcard1 /external_sd
-    symlink /storage/usbdisk /usbdisk
-    symlink /storage/usbdisk /mnt/usbdisk
-
+    symlink /sdcard /mnt/sdcard
+    symlink /sdcard /storage/sdcard0
+	
 on early-boot
     # set RLIMIT_MEMLOCK to 64MB
     setrlimit 8 67108864 67108864
@@ -97,9 +122,9 @@ on boot
     chown system drmrpc /sys/devices/soc.0/78b9000.i2c/i2c-5/5-0070/secure_touch
 
     # KSM tuning
-    #write /sys/kernel/mm/ksm/pages_to_scan 100
-    #write /sys/kernel/mm/ksm/sleep_millisecs 500
-    #write /sys/kernel/mm/ksm/run 1
+    write /sys/kernel/mm/ksm/pages_to_scan 100
+    write /sys/kernel/mm/ksm/sleep_millisecs 500
+    write /sys/kernel/mm/ksm/run 1
 
     chown bluetooth bluetooth /sys/module/bluetooth_power/parameters/power
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
@@ -141,7 +166,7 @@ on boot
     chmod 2770 /dev/socket/qmux_bluetooth
     mkdir /dev/socket/qmux_gps 0770 gps gps
     chmod 2770 /dev/socket/qmux_gps
-
+	
     setprop wifi.interface wlan0
 
     chown system system /proc/sched_orig_load_balance_enable
@@ -215,7 +240,7 @@ on boot
 
     # Allow access for CCID command/response timeout configuration
     chown system system /sys/module/ccid_bridge/parameters/bulk_msg_timeout
-
+	
 # reset_reason
     chown system system /proc/reset_reason
     chmod 0600 /proc/reset_reason
@@ -296,39 +321,39 @@ on boot
     chown root radio /proc/cmdline
 
 # Auto Brightness
-    chown system system  /sys/class/backlight/panel/auto_brightness
-    chmod 0660 /sys/class/backlight/panel/auto_brightness
+	chown system system  /sys/class/backlight/panel/auto_brightness
+	chmod 0660 /sys/class/backlight/panel/auto_brightness
 
 # LCD mdnie and panel work
-    chown system system  /sys/class/mdnie/mdnie/lcdtype
-    chown system system  /sys/class/mdnie/mdnie/lcd_power
-    chown system media_rw /sys/class/mdnie/mdnie/scenario
-    chmod 0660 /sys/class/mdnie/mdnie/scenario
+	chown system system  /sys/class/mdnie/mdnie/lcdtype
+	chown system system  /sys/class/mdnie/mdnie/lcd_power
+	chown system media_rw /sys/class/mdnie/mdnie/scenario
+	chmod 0660 /sys/class/mdnie/mdnie/scenario
 
-    chown system system /sys/class/mdnie/mdnie/tuning
-    chown system media_rw /sys/class/mdnie/mdnie/outdoor
-    chown system system  /sys/class/mdnie/mdnie/mdnie_temp
-    chown system media_rw /sys/class/mdnie/mdnie/mode
-    chown system system /sys/class/mdnie/mdnie/negative
-    chown system media_rw /sys/class/mdnie/mdnie/playspeed
-    chown system media_rw /sys/class/mdnie/mdnie/accessibility
-    chown system system  /sys/class/mdnie/mdnie/cabc
-    chown system system  /sys/class/mdnie/mdnie/bypass
-    chown system media_rw /sys/class/mdnie/mdnie/sensorRGB
-    chmod 0660 /sys/class/mdnie/mdnie/sensorRGB
+	chown system system /sys/class/mdnie/mdnie/tuning
+	chown system media_rw /sys/class/mdnie/mdnie/outdoor
+	chown system system  /sys/class/mdnie/mdnie/mdnie_temp
+	chown system media_rw /sys/class/mdnie/mdnie/mode
+	chown system system /sys/class/mdnie/mdnie/negative
+	chown system media_rw /sys/class/mdnie/mdnie/playspeed
+	chown system media_rw /sys/class/mdnie/mdnie/accessibility
+	chown system system  /sys/class/mdnie/mdnie/cabc
+	chown system system  /sys/class/mdnie/mdnie/bypass
+	chown system media_rw /sys/class/mdnie/mdnie/sensorRGB
+	chmod 0660 /sys/class/mdnie/mdnie/sensorRGB
 
-    chown system system /sys/class/lcd/panel/panel/auto_brightness
-    chown system system /sys/class/lcd/panel/window_type
-    chown radio system /sys/class/lcd/panel/power_reduce
-    chown radio system /sys/class/lcd/panel/siop_enable
-    chown radio system /sys/class/lcd/panel/temperature
-    chown radio system /sys/class/lcd/panel/tuning
-    chown radio system /sys/class/lcd/panel/lux
+	chown system system /sys/class/lcd/panel/panel/auto_brightness
+	chown system system /sys/class/lcd/panel/window_type
+	chown radio system /sys/class/lcd/panel/power_reduce
+	chown radio system /sys/class/lcd/panel/siop_enable
+	chown radio system /sys/class/lcd/panel/temperature
+	chown radio system /sys/class/lcd/panel/tuning
+	chown radio system /sys/class/lcd/panel/lux
 
 # Adjust YUV to RGB Conversion(CSC_Conversion)
     chown system media_rw /sys/class/graphics/fb0/csc_cfg
     chmod 0660 /sys/class/graphics/fb0/csc_cfg
-
+	
 # permission for Input Device(TSP).
     chown system radio /sys/class/sec/tsp/cmd
     chmod 0660 /sys/class/sec/tsp/input/enabled
@@ -436,7 +461,11 @@ on boot
     chown system radio /sys/class/power_supply/ps/status
     chmod 0664 /sys/class/power_supply/ps/status
     chown system radio /sys/class/power_supply/battery/batt_temp_table
-
+    
+    swapon_all fstab.qcom
+    write /proc/sys/vm/page-cluster 0
+    write /proc/sys/vm/swappiness 100
+		
 on fs
     mount_all fstab.qcom
 
@@ -448,10 +477,9 @@ on fs
 # fm_radio
     chmod 0777 /dev/radio0
     chown system system /dev/radio0	
-
+	
 # msm specific files that need to be created on /data
 on post-fs-data
-    mkdir /data/tombstones 0771 system system
     mkdir /tombstones/modem 0771 system system
     mkdir /tombstones/lpass 0771 system system
     mkdir /tombstones/wcnss 0771 system system
@@ -464,10 +492,6 @@ on post-fs-data
 
     # we will remap this as /mnt/sdcard with the sdcard fuse tool
     mkdir /data/misc/camera 0770 camera camera
-
-    mkdir /data/media 0770 media_rw media_rw
-    #chown media_rw media_rw /data/media
-    restorecon_recursive /data/media
 
     mkdir /data/misc/ipa 0700 net_admin net_admin
 
@@ -582,12 +606,13 @@ on post-fs-data
     chown radio system /sys/class/dct/dct_node/interface
     chown radio system /sys/class/dct/dct_node/libname
     chown radio system /sys/class/dct/dct_node/tunned
-
+	
 #start camera server as daemon
 service qcamerasvr /system/bin/mm-qcamera-daemon
     class main
     user camera
     group camera system inet input graphics
+	writepid /dev/cpuset/system-background/tasks
 
 service qseecomd /system/bin/qseecomd
    class core
@@ -598,6 +623,7 @@ service perfd /system/bin/perfd
    class main
    user root
    disabled
+   writepid /dev/cpuset/system-background/tasks
 
 service thermal-engine /system/bin/thermal-engine
    class main
@@ -725,10 +751,10 @@ service qmuxd /system/bin/qmuxd
     class main
     user root
     group radio audio bluetooth gps qcom_diag
-
+		
 service netmgrd /system/bin/netmgrd
     class main
-
+	
 on property:ro.use_data_netmgrd=false
     # netmgr not supported on specific target
     stop netmgrd	
@@ -767,7 +793,7 @@ service wpa_supplicant /system/bin/wpa_supplicant \
     socket wpa_wlan0 dgram 660 wifi wifi
     disabled
     oneshot
-
+	
 on property:init.svc.wpa_supplicant=stopped
     stop dhcpcd	
 
@@ -791,33 +817,33 @@ service iprenew_p2p /system/bin/dhcpcd -n
     disabled
     oneshot
 
-service ptt_socket_app /system/bin/ptt_socket_app -d
-    class main
-    user root
-    group root
-    disabled
-    oneshot
+#service ptt_socket_app /system/bin/ptt_socket_app -d
+#    class main
+#    user root
+#    group root
+#    disabled
+#    oneshot
 
-service ptt_ffbm /system/bin/ptt_socket_app -f -d
-    user root
-    group root
-    disabled
-    oneshot
+#service ptt_ffbm /system/bin/ptt_socket_app -f -d
+#    user root
+#    group root
+#    disabled
+#    oneshot
 
-service ftm_ffbm /system/bin/ftmdaemon
-    user root
-    group root
-    disabled
-    oneshot
+#service ftm_ffbm /system/bin/ftmdaemon
+#    user root
+#    group root
+#    disabled
+#    oneshot
 
-service cnss_diag /system/bin/cnss_diag --q
-    class main
-    user root
-    group root
-    oneshot
+#service cnss_diag /system/bin/cnss_diag --q
+#    class main
+#    user root
+#    group root
+#    oneshot
 
-service cnss-daemon /system/bin/cnss-daemon -n -l
-    class late_start
+#service cnss-daemon /system/bin/cnss-daemon -n -l
+#    class late_start
 
 service dhcpcd_bt-pan /system/bin/dhcpcd -BKLG
     class late_start
@@ -855,17 +881,6 @@ service wlandutservice /system/bin/wlandutservice
     group wifi net_raw net_admin system inet
     disabled
     oneshot
-
-service macloader /system/bin/macloader
-    class main
-    oneshot
-
-on property:init.svc.macloader=stopped
-    chown system root /data/.cid.info
-    chmod 0664 /data/.cid.info
-    chown system root /data/.rev
-    chmod 0664 /data/.rev
-# end of wifi
 
 service sec-sh /system/bin/sh /system/etc/init.sec.boot.sh
     class main
@@ -909,39 +924,28 @@ on property:persist.radio.multisim.config=dsds
     stop ril-daemon
     start ril-daemon
     start ril-daemon1
-
+	
 # RIL for multi rild
 service ril-daemon1 /system/bin/rild -l /system/lib/libsec-ril-dsds.so -c 2
     class main
     socket rild2 stream 660 root radio
     socket rild-debug2 stream 660 radio system
     user root
-    group radio cache inet misc audio log qcom_diag sdcard_r shell sdcard_rw system drmrpc
-
-# virtual sdcard daemon running as media_rw (1023)
-service sdcard /system/bin/sdcard -u 1023 -g 1023 -l /data/media /mnt/shell/emulated
-    class late_start
-
-service fuse_sdcard1 /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/sdcard1 /storage/sdcard1
-    class late_start
     disabled
-
-service fuse_usbdisk /system/bin/sdcard -u 1023 -g 1023 /mnt/media_rw/usbdisk /storage/usbdisk
-    class late_start
-    disabled
+    group radio cache inet misc audio log qcom_diag system drmrpc sdcard_r sdcard_rw shell
 
 service hcidump /system/bin/sh /system/etc/hcidump.sh
     user bluetooth
     group bluetooth system net_bt_admin net_admin
     disabled
     oneshot
-
+	
 service ssr_diag /system/bin/ssr_diag
     class late_start
     user system
     group system
     disabled
-
+	
 service audiod /system/bin/audiod
    class late_start
    user root
@@ -957,11 +961,19 @@ service charger /charger
     class charger
     group log
     seclabel u:r:healthd:s0
-
+		
 on charger
     chown root system /sys/class/power_supply/bms/current_now
     chown root system /sys/class/power_supply/bms/voltage_ocv
     chmod 0664 /sys/class/power_supply/bms/current_now
     chmod 0664 /sys/class/power_supply/bms/voltage_ocv
+    #start vm_bms
     load_all_props
     start qcom-post-boot
+	
+on class_start:late_start
+    trigger enable-low-power
+
+on property:init.svc.recovery=running
+    trigger enable-low-power	
+
