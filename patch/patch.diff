@@ -34,7 +34,7 @@ diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/har
 +               mAudioManager.setParameters("fm_radio_volume=on");
 +               mAudioManager.setParameters("FMRadioVol=0.1496235728");
 +               mAudioManager.setMode(AudioManager.MODE_IN_CALL);
-+               mAudioManager.setSpeakerphoneOn(true);
++               /* mAudioManager.setSpeakerphoneOn(true); */
             } else {
                 Log.d(LOGTAG, "Audio source set it as headset");
                 AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_NONE);
@@ -42,13 +42,13 @@ diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/har
 +               mAudioManager.setParameters("fm_radio_volume=on");
 +               mAudioManager.setParameters("FMRadioVol=0.1496235728");
 +               mAudioManager.setMode(AudioManager.MODE_IN_CALL);
-+               mAudioManager.setSpeakerphoneOn(false);
++               /* mAudioManager.setSpeakerphoneOn(false); */
             }
         } else {
                 Log.d(LOGTAG, "A2DP is connected, set audio source to A2DP HS");
                 AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_SPEAKER);
                 mSpeakerPhoneOn = true;
-+               mAudioManager.setSpeakerphoneOn(true);
++               /* mAudioManager.setSpeakerphoneOn(true); */
         }
  
         mPlaybackInProgress = true;
@@ -65,7 +65,7 @@ diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/har
        public void run() {
           Log.v(LOGTAG, "Disabling Speaker");
           AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_NONE);
-+		 mAudioManager.setSpeakerphoneOn(false);
++		 /* mAudioManager.setSpeakerphoneOn(false); */
        }
     };
  
@@ -73,7 +73,7 @@ diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/har
        if ( mSpeakerPhoneOn) {
            mSpeakerPhoneOn = false;
            AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_NONE);
-+		  mAudioManager.setSpeakerphoneOn(false);
++		  /* mAudioManager.setSpeakerphoneOn(false); */
        }
     }
  
@@ -81,12 +81,12 @@ diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/har
              } else {
                  Log.d(LOGTAG, "A2DP is not connected, force none");
                  AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_NONE);
-+				mAudioManager.setSpeakerphoneOn(false);
++				/* mAudioManager.setSpeakerphoneOn(false); */
              }
         } else if (speakerOn == true) {
             Log.d(LOGTAG, "enabling speaker");
             AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_SPEAKER);
-+		   mAudioManager.setSpeakerphoneOn(true);
++		   /* mAudioManager.setSpeakerphoneOn(true); */
         }
  
         Log.d(LOGTAG, "speakerOn completed:" + speakerOn);
