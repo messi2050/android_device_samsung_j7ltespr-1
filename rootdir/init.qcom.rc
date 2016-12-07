@@ -594,10 +594,6 @@ on post-fs-data
     mkdir /data/system/perfd 0770 root system
     chmod 2770 /data/system/perfd
 
-    # NFC local data and nfcee xml storage
-    #mkdir /data/nfc 0770 nfc nfc
-    #mkdir /data/nfc/param 0770 nfc nfc
-
     # DCT(Display Clock Tunning)	- Interface 2.0
     chown radio system /sys/class/dct/dct_node/data
     chown radio system /sys/class/dct/dct_node/state
@@ -688,10 +684,10 @@ on property:init.svc.wpa_supplicant=stopped
 on property:bluetooth.isEnabled=true
     write /sys/class/bluetooth/hci0/idle_timeout 7000
 
-service qcom-c_core-sh /system/bin/sh /init.qcom.class_core.sh
-    class core
-    user root
-    oneshot
+#service qcom-c_core-sh /system/bin/sh /init.qcom.class_core.sh
+#    class core
+#    user root
+#    oneshot
 
 on property:vold.decrypt=trigger_restart_framework
     start config_bluetooth
