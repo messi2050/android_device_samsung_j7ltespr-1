@@ -44,7 +44,6 @@ media.aac_51_output_enabled=true
 vidc.enc.narrow.searchrange=1
 
 # Camera
-camera2.portability.force_api=1
 ro.device.rear_cam=8 MP
 ro.device.front_cam=5 MP
 
