@@ -188,6 +188,9 @@ PRODUCT_PACKAGES += \
     libqcomfm_jni \
     qcom.fmradio
 
+PRODUCT_PROPERTY_OVERRIDES += \
+    hw.fm.internal_antenna=true
+
 # IPv6 tethering
 PRODUCT_PACKAGES += \
     ebtables \
