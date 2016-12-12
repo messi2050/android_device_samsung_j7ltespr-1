@@ -51,9 +51,9 @@ TARGET_SPECIFIC_HEADER_PATH := $(LOCAL_PATH)/include
 TARGET_KERNEL_ARCH               := arm
 BOARD_DTBTOOL_ARG                := -2
 BOARD_KERNEL_BASE                := 0x80000000
-BOARD_KERNEL_CMDLINE             := console=ttyHSL0,115200,n8 androidboot.console=ttyHSL0 androidboot.hardware=qcom msm_rtb.filter=0x3F ehci-hcd.park=3 androidboot.bootdevice=7824900.sdhci androidboot.selinux=permissive
-BOARD_KERNEL_TAGS_OFFSET         := 0x81E00000
-BOARD_RAMDISK_OFFSET             := 0x82000000
+BOARD_KERNEL_CMDLINE             := console=null androidboot.hardware=qcom msm_rtb.filter=0x3F ehci-hcd.park=3 androidboot.bootdevice=7824900.sdhci
+BOARD_RAMDISK_OFFSET             := 0x02000000
+BOARD_KERNEL_TAGS_OFFSET         := 0x01e00000
 BOARD_KERNEL_PAGESIZE            := 2048
 BOARD_KERNEL_SEPARATED_DT        := true
 TARGET_KERNEL_SOURCE             := kernel/samsung/fortunaxx
