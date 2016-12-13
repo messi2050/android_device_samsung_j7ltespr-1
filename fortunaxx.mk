@@ -81,7 +81,7 @@ PRODUCT_COPY_FILES += \
 # Use cm images if available, aosp ones otherwise
 PRODUCT_PACKAGES += \
     charger_res_images \
-    cm_charger_res_images	
+    cm_charger_res_images
 
 # Doze
 PRODUCT_PACKAGES += \
@@ -203,7 +203,7 @@ PRODUCT_PACKAGES += \
 # Misc. libs
 PRODUCT_PACKAGES += \
     libstlport \
-    libboringssl-compat		
+    libboringssl-compat
 
 # SoftAP
 PRODUCT_PACKAGES += \
