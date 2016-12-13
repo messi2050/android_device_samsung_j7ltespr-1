@@ -21,7 +21,7 @@
 *
 */
 
-//#define LOG_NDEBUG 0
+#define LOG_NDEBUG 0
 
 #define LOG_TAG "CameraWrapper"
 #include <cutils/log.h>
@@ -119,7 +119,7 @@ static char *camera_fixup_getparams(int id, const char *settings)
     params.set(android::CameraParameters::KEY_EXPOSURE_COMPENSATION_STEP, "0.5");
     params.set(android::CameraParameters::KEY_MIN_EXPOSURE_COMPENSATION, "-2");
     params.set(android::CameraParameters::KEY_MAX_EXPOSURE_COMPENSATION, "2");
-	
+
     /* If the vendor has HFR values but doesn't also expose that
      * this can be turned off, fixup the params to tell the Camera
      * that it really is okay to turn it off.
@@ -130,19 +130,19 @@ static char *camera_fixup_getparams(int id, const char *settings)
         sprintf(tmp, "%s,off", hfrValues);
         params.set(KEY_VIDEO_HFR_VALUES, tmp);
     }
-	
-	params.set("whitebalance-values", "auto,incandescent,fluorescent,daylight,cloudy-daylight");
+
+    params.set("whitebalance-values", "auto,incandescent,fluorescent,daylight,cloudy-daylight");
     params.set("effect-values", "none,mono,negative,sepia");
-	
-	bool isVideo = false;
+
+    bool isVideo = false;
     if (params.get(android::CameraParameters::KEY_RECORDING_HINT))
         isVideo = !strcmp(params.get(android::CameraParameters::KEY_RECORDING_HINT), "true");
 
     if(!isVideo){
-		params.set("auto-exposure-values", "center");
-		params.set("preview-format-values", "yuv420p");
-	}
-	
+        params.set("auto-exposure-values", "center");
+        params.set("preview-format-values", "yuv420p");
+    }
+
 
     android::String8 strParams = params.flatten();
     char *ret = strdup(strParams.string());
@@ -178,14 +178,7 @@ static char *camera_fixup_setparams(struct camera_device *device, const char *se
         else if (strcmp(isoMode, "ISO800") == 0)
             params.set(android::CameraParameters::KEY_ISO_MODE, "800");
     }
-	
-	// fix params here
-    //int video_width, video_height;
-    //params.getPreviewSize(&video_width, &video_height);
-    //if(video_width*video_height <= 960*540){
-    //    params.set("preview-format", "yuv420p");
-    //}
-	
+
     android::String8 strParams = params.flatten();
 
     if (fixed_set_params[id])
