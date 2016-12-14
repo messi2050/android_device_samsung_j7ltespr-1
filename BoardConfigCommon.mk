@@ -151,7 +151,6 @@ TARGET_PROVIDES_LIBLIGHT              := true
 
 # Media
 TARGET_QCOM_MEDIA_VARIANT             := caf
-#TARGET_ENABLE_QC_AV_ENHANCEMENTS      := true
 
 # Display
 TARGET_CONTINUOUS_SPLASH_ENABLED      := true
@@ -165,8 +164,8 @@ MAX_EGL_CACHE_SIZE                    := 2048*1024
 OVERRIDE_RS_DRIVER                    := libRSDriver.so
 
 # Boot animation
-TARGET_SCREEN_WIDTH                   := 540
-TARGET_SCREEN_HEIGHT                  := 960
+TARGET_SCREEN_WIDTH                  := 540
+TARGET_SCREEN_HEIGHT                 := 960
 
 # Recovery
 TARGET_RECOVERY_FSTAB                := $(LOCAL_PATH)/rootdir/fstab.qcom
@@ -180,19 +179,19 @@ BOARD_USE_CUSTOM_RECOVERY_FONT       := \"roboto_23x41.h\"
 BOARD_USES_MMCUTILS                  := true
 
 # Logging
-TARGET_USES_LOGD                    := false
+TARGET_USES_LOGD                     := false
 
 # Releasetools
-TARGET_RELEASETOOLS_EXTENSIONS      := $(LOCAL_PATH)
+TARGET_RELEASETOOLS_EXTENSIONS       := $(LOCAL_PATH)
 
 # Misc.
-TARGET_SYSTEM_PROP                  := $(LOCAL_PATH)/system.prop
+TARGET_SYSTEM_PROP                   := $(LOCAL_PATH)/system.prop
 
-PRODUCT_COPY_FILES                  := $(filter-out frameworks/base/data/keyboards/Generic.kl:system/usr/keylayout/Generic.kl , $(PRODUCT_COPY_FILES))
-PRODUCT_COPY_FILES                  := $(filter-out frameworks/av/media/libeffects/data/audio_effects.conf:system/etc/audio_effects.conf , $(PRODUCT_COPY_FILES))
+PRODUCT_COPY_FILES                   := $(filter-out frameworks/base/data/keyboards/Generic.kl:system/usr/keylayout/Generic.kl , $(PRODUCT_COPY_FILES))
+PRODUCT_COPY_FILES                   := $(filter-out frameworks/av/media/libeffects/data/audio_effects.conf:system/etc/audio_effects.conf , $(PRODUCT_COPY_FILES))
 
 # SELinux
 include device/qcom/sepolicy/sepolicy.mk
 
 BOARD_SEPOLICY_DIRS += \
-   device/samsung/fortunave3g/sepolicy
+   device/samsung/fortunaxx-common/sepolicy
