@@ -33,7 +33,7 @@ TARGET_GLOBAL_CPPFLAGS          += -mfpu=neon -mfloat-abi=softfp
 TARGET_CPU_VARIANT              := cortex-a53
 TARGET_CPU_CORTEX_A53           := true
 ARCH_ARM_HAVE_TLS_REGISTER      := true
-ENABLE_CPUSETS                  := true
+#ENABLE_CPUSETS                  := true
 
 # Board CFLAGS
 COMMON_GLOBAL_CFLAGS                 += -DQCOM_BSP
