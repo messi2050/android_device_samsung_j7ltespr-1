@@ -26,23 +26,27 @@ diff -ur a/packages/services/Telecomm/src/com/android/server/telecom/CallAudioMa
 diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java
 --- a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java	Mon Jun 20 17:28:46 2016
 +++ b/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java	Mon Jun 27 10:45:01 2016
-@@ -1066,9 +1066,15 @@
+@@ -1066,9 +1066,19 @@
                 mSpeakerPhoneOn = true;
                 Log.d(LOGTAG, "Audio source set it as speaker");
                 AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_SPEAKER);
++               mAudioManager.setMode(AudioManager.MODE_IN_CALL);
++               mAudioManager.setSpeakerphoneOn(true);
 +               mAudioManager.setParameters("fm_mode=on");
 +               mAudioManager.setParameters("fm_radio_volume=on");
 +               mAudioManager.setParameters("FMRadioVol=0.1496235728");
             } else {
                 Log.d(LOGTAG, "Audio source set it as headset");
                 AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_NONE);
++               mAudioManager.setMode(AudioManager.MODE_IN_CALL);
++               mAudioManager.setSpeakerphoneOn(false);
 +               mAudioManager.setParameters("fm_mode=on");
 +               mAudioManager.setParameters("fm_radio_volume=on");
 +               mAudioManager.setParameters("FMRadioVol=0.1496235728");
             }
         } else {
                 Log.d(LOGTAG, "A2DP is connected, set audio source to A2DP HS");
-@@ -1090,6 +1096,8 @@
+@@ -1090,6 +1100,8 @@
         Log.d(LOGTAG, "In stopFM");
         configureAudioDataPath(false);
         mPlaybackInProgress = false;
@@ -51,7 +55,22 @@ diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/har
         try {
             if ((mServiceInUse) && (mCallbacks != null))
                 mCallbacks.onFmAudioPathStopped();
-@@ -2480,6 +2488,7 @@
+@@ -2376,10 +2388,14 @@
+             } else {
+                 Log.d(LOGTAG, "A2DP is not connected, force none");
+                 AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_NONE);
++                mAudioManager.setMode(AudioManager.MODE_IN_CALL);
++                mAudioManager.setSpeakerphoneOn(false);
+             }
+        } else if (speakerOn == true) {
+            Log.d(LOGTAG, "enabling speaker");
+            AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_SPEAKER);
++           mAudioManager.setMode(AudioManager.MODE_IN_CALL);
++           mAudioManager.setSpeakerphoneOn(true);
+        }
+ 
+        Log.d(LOGTAG, "speakerOn completed:" + speakerOn);
+@@ -2480,6 +2496,7 @@
        {
           mMuted = true;
           audioManager.setParameters("fm_mute=1");
@@ -59,7 +78,7 @@ diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/har
           if (mAudioTrack != null)
               mAudioTrack.setVolume(0.0f);
        }
-@@ -2502,6 +2511,7 @@
+@@ -2502,6 +2519,7 @@
        {
           mMuted = false;
           audioManager.setParameters("fm_mute=0");
