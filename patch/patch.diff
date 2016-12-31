@@ -30,16 +30,16 @@ diff -ur a/hardware/qcom/fm/fmapp2/src/com/caf/fmradio/FMRadioService.java b/har
                 mSpeakerPhoneOn = true;
                 Log.d(LOGTAG, "Audio source set it as speaker");
                 AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_SPEAKER);
-+               mAudioManager.setMode(AudioManager.MODE_IN_CALL);
-+               mAudioManager.setSpeakerphoneOn(true);
++               /* mAudioManager.setMode(AudioManager.MODE_IN_CALL); */
++               /* mAudioManager.setSpeakerphoneOn(true); */
 +               mAudioManager.setParameters("fm_mode=on");
 +               mAudioManager.setParameters("fm_radio_volume=on");
 +               mAudioManager.setParameters("FMRadioVol=0.1496235728");
             } else {
                 Log.d(LOGTAG, "Audio source set it as headset");
                 AudioSystem.setForceUse(AudioSystem.FOR_MEDIA, AudioSystem.FORCE_NONE);
-+               mAudioManager.setMode(AudioManager.MODE_IN_CALL);
-+               mAudioManager.setSpeakerphoneOn(false);
++               /* mAudioManager.setMode(AudioManager.MODE_IN_CALL); */
++               /* mAudioManager.setSpeakerphoneOn(false); */
 +               mAudioManager.setParameters("fm_mode=on");
 +               mAudioManager.setParameters("fm_radio_volume=on");
 +               mAudioManager.setParameters("FMRadioVol=0.1496235728");
