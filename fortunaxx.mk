@@ -133,7 +133,7 @@ PRODUCT_PACKAGES += \
 # Keystore
 PRODUCT_PACKAGES += \
     keystore.msm8916
-    
+
 # Camera
 PRODUCT_PACKAGES += \
     libmm-qcamera \
@@ -229,7 +229,7 @@ ADDITIONAL_DEFAULT_PROPERTIES += \
     ro.secure=0 \
     ro.adb.secure=0 \
     ro.debuggable=1 \
-    persist.service.adb.enable=0
+    persist.service.adb.enable=1
 
 # KSM
 PRODUCT_PROPERTY_OVERRIDES += \

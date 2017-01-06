@@ -48,15 +48,15 @@ TARGET_USES_NEW_ION_API              := true
 TARGET_SPECIFIC_HEADER_PATH := $(LOCAL_PATH)/include
 
 # Kernel
-TARGET_KERNEL_ARCH               := arm
-BOARD_DTBTOOL_ARG                := -2
-BOARD_KERNEL_BASE                := 0x80000000
-BOARD_KERNEL_CMDLINE             := console=null androidboot.hardware=qcom msm_rtb.filter=0x3F ehci-hcd.park=3 androidboot.bootdevice=7824900.sdhci androidboot.selinux=permissive
-BOARD_RAMDISK_OFFSET             := 0x02000000
-BOARD_KERNEL_TAGS_OFFSET         := 0x01e00000
-BOARD_KERNEL_PAGESIZE            := 2048
-BOARD_KERNEL_SEPARATED_DT        := true
-TARGET_KERNEL_SOURCE             := kernel/samsung/fortunaxx
+TARGET_KERNEL_ARCH                 := arm
+BOARD_DTBTOOL_ARG                  := -2
+BOARD_KERNEL_BASE                  := 0x80000000
+BOARD_KERNEL_CMDLINE               := console=null androidboot.hardware=qcom msm_rtb.filter=0x3F ehci-hcd.park=3 androidboot.bootdevice=7824900.sdhci androidboot.selinux=permissive
+BOARD_RAMDISK_OFFSET               := 0x02000000
+BOARD_KERNEL_TAGS_OFFSET           := 0x01e00000
+BOARD_KERNEL_PAGESIZE              := 2048
+BOARD_KERNEL_SEPARATED_DT          := true
+TARGET_KERNEL_SOURCE               := kernel/samsung/fortunaxx
 
 # Partition sizes
 TARGET_USERIMAGES_USE_EXT4          := true
@@ -134,7 +134,7 @@ TARGET_POWERHAL_SET_INTERACTIVE_EXT  := $(LOCAL_PATH)/power/power_ext.c
 TARGET_POWERHAL_VARIANT              := qcom
 
 # Vold
-TARGET_USE_CUSTOM_LUN_FILE_PATH      := /sys/devices/platform/msm_hsusb/gadget/lun%d/file
+TARGET_USE_CUSTOM_LUN_FILE_PATH      := /sys/devices/platform/msm_hsusb/gadget/lun/file
 BOARD_VOLD_DISC_HAS_MULTIPLE_MAJORS  := true
 BOARD_VOLD_MAX_PARTITIONS            := 65
 
@@ -176,9 +176,6 @@ BOARD_HAS_NO_SELECT_BUTTON           := true
 BOARD_RECOVERY_SWIPE                 := true
 BOARD_USE_CUSTOM_RECOVERY_FONT       := \"roboto_23x41.h\"
 BOARD_USES_MMCUTILS                  := true
-
-# Logging
-TARGET_USES_LOGD                     := false
 
 # Releasetools
 TARGET_RELEASETOOLS_EXTENSIONS       := $(LOCAL_PATH)
