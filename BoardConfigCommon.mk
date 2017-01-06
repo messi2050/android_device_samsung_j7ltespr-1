@@ -180,6 +180,9 @@ BOARD_USES_MMCUTILS                  := true
 # Releasetools
 TARGET_RELEASETOOLS_EXTENSIONS       := $(LOCAL_PATH)
 
+# Logging
+TARGET_USES_LOGD                     := false
+
 # Misc.
 TARGET_SYSTEM_PROP                   := $(LOCAL_PATH)/system.prop
 
