@@ -13,18 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #define PATH_WHITELIST_EXTRA_H \
-    "/proc/apid", \
-    "/proc/aphd", \
-    "/proc/sys/kernel/boot_reason", \
-    "/proc/aprf", \
-    "/dev/log/main",
-
-// Overload this file in your device specific config if you need
-// to add extra whitelisted paths.
-// WARNING: Only use this if necessary. Custom inits should be
-// checked for leaked file descriptors before even considering
-// this.
-// In order to add your files, copy the whole file (don't forget the copyright notice!),
-// uncomment the #define above and change the paths inside to match your requirements
+    "/dev/log/radio", \
+	"/dev/log/main",

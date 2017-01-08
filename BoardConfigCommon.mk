@@ -45,7 +45,7 @@ USE_DEVICE_SPECIFIC_QCOM_PROPRIETARY := true
 TARGET_USES_QCOM_BSP                 := true
 TARGET_USES_NEW_ION_API              := true
 
-TARGET_SPECIFIC_HEADER_PATH := $(LOCAL_PATH)/include
+TARGET_SPECIFIC_HEADER_PATH          := $(LOCAL_PATH)/include
 
 # Kernel
 TARGET_KERNEL_ARCH                 := arm
