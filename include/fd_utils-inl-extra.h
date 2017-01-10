@@ -15,4 +15,6 @@
  */
 #define PATH_WHITELIST_EXTRA_H \
     "/dev/log/radio", \
-	"/dev/log/main",
+	"/dev/log/main", \
+	"/dev/log/events", \
+	"/dev/log/system",
