@@ -348,6 +348,10 @@ on boot
     mkdir /data/nfc 0700 nfc nfc
     mkdir /data/nfc/param 0700 nfc nfc
 
+    # For PN547 NFC
+    chmod 0660 /dev/pn547
+    chown nfc nfc /dev/pn547
+
 # Permissions for Camera
     chown root system /sys/class/camera/rear/rear_camantibanding
     chown system system /sys/class/camera/rear/rear_camfw
