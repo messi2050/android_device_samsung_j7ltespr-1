@@ -17,10 +17,12 @@
 -include device/samsung/qcom-common/BoardConfigCommon.mk 
 
 # inherit from the proprietary version
--include vendor/samsung/fortunaxx-common/BoardConfigVendor.mk
+-include vendor/samsung/j7ltespr/AndroidBoardVendor.mk
+
+TARGET_OTA_ASSERT_DEVICE := j7ltespr,SM-J700P,J700P
 
 # PATH
-LOCAL_PATH := device/samsung/fortunaxx-common
+LOCAL_PATH := device/samsung/j7ltespr
 
 # Platform
 TARGET_BOARD_PLATFORM           := msm8916
@@ -56,19 +58,19 @@ BOARD_RAMDISK_OFFSET               := 0x02000000
 BOARD_KERNEL_TAGS_OFFSET           := 0x01e00000
 BOARD_KERNEL_PAGESIZE              := 2048
 BOARD_KERNEL_SEPARATED_DT          := true
-TARGET_KERNEL_SOURCE               := kernel/samsung/fortunaxx
+TARGET_KERNEL_SOURCE               := kernel/samsung/msm8929
+TARGET_KERNEL_CONFIG               := lineageos_j7ltespr_defconfig
 
 # Partition sizes
 TARGET_USERIMAGES_USE_EXT4          := true
 BOARD_BOOTIMAGE_PARTITION_SIZE      := 13631488
 BOARD_RECOVERYIMAGE_PARTITION_SIZE  := 15728640
-BOARD_SYSTEMIMAGE_PARTITION_SIZE    := 1568669696
+BOARD_SYSTEMIMAGE_PARTITION_SIZE    := 3294625792
 BOARD_CACHEIMAGE_PARTITION_SIZE     := 314572800
 BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE   := ext4
 BOARD_PERSISTIMAGE_PARTITION_SIZE   := 8388608
 BOARD_PERSISTIMAGE_FILE_SYSTEM_TYPE := ext4
-# (5731495936 - 16384)
-BOARD_USERDATAIMAGE_PARTITION_SIZE  := 5731479552
+BOARD_USERDATAIMAGE_PARTITION_SIZE  := 11900268544
 BOARD_FLASH_BLOCK_SIZE              := 131072
 
 # Wifi
@@ -102,7 +104,7 @@ BOARD_HAVE_BLUETOOTH_QCOM                   := true
 BLUETOOTH_HCI_USE_MCT                       := true
 
 # Custom RIL class
-BOARD_RIL_CLASS                      := ../../../device/samsung/fortunaxx-common/ril/
+BOARD_RIL_CLASS                      := ../../../device/samsung/j7ltespr/ril/
 PROTOBUF_SUPPORTED                   := true
 
 # Fonts
@@ -163,8 +165,8 @@ MAX_EGL_CACHE_SIZE                    := 2048*1024
 OVERRIDE_RS_DRIVER                    := libRSDriver.so
 
 # Boot animation
-TARGET_SCREEN_WIDTH                  := 540
-TARGET_SCREEN_HEIGHT                 := 960
+TARGET_SCREEN_WIDTH                  := 720
+TARGET_SCREEN_HEIGHT                 := 1280
 
 # Recovery
 TARGET_RECOVERY_FSTAB                := $(LOCAL_PATH)/rootdir/fstab.qcom
@@ -192,5 +194,10 @@ PRODUCT_COPY_FILES                   := $(filter-out frameworks/av/media/libeffe
 # SELinux
 include device/qcom/sepolicy/sepolicy.mk
 
+# Vendor Init
+TARGET_UNIFIED_DEVICE                := true
+TARGET_INIT_VENDOR_LIB               := libinit_j7ltespr
+TARGET_RECOVERY_DEVICE_MODULES       := libinit_j7ltespr
+
 BOARD_SEPOLICY_DIRS += \
-   device/samsung/fortunaxx-common/sepolicy
+   device/samsung/j7ltespr/sepolicy

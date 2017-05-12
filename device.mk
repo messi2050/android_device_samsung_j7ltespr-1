@@ -1,5 +1,7 @@
 # Also get non-open-source specific aspects if available
-$(call inherit-product-if-exists, vendor/samsung/fortunaxx-common/fortunaxx-common-vendor.mk)
+$(call inherit-product, vendor/samsung/j7ltespr/j7ltespr-vendor.mk)
+
+$(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 
 # Screen density
 PRODUCT_AAPT_CONFIG := normal
@@ -9,7 +11,7 @@ PRODUCT_AAPT_PREF_CONFIG := xhdpi
 DEVICE_PACKAGE_OVERLAYS := $(LOCAL_PATH)/overlay
 
 # System properties
--include device/samsung/fortunaxx-common/system_prop.mk
+-include device/samsung/j7ltespr/system_prop.mk
 
 # Permissions
 PRODUCT_COPY_FILES += \
@@ -47,10 +49,13 @@ PRODUCT_COPY_FILES += \
 
 # Prebuilt kl keymaps
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/keylayout/Synaptics_HID_TouchPad.idc:system/usr/idc/Synaptics_HID_TouchPad.idc \
+    $(LOCAL_PATH)/keylayout/ft5x06_ts.kl:system/usr/keylayout/ft5x06_ts.kl \
     $(LOCAL_PATH)/keylayout/gpio-keys.kl:system/usr/keylayout/gpio-keys.kl \
+    $(LOCAL_PATH)/keylayout/Synaptics_RMI4_TouchPad_Sensor.idc:system/usr/idc/Synaptics_RMI4_TouchPad_Sensor.idc \
+    $(LOCAL_PATH)/keylayout/Synaptics_HID_TouchPad.idc:system/usr/idc/Synaptics_HID_TouchPad.idc \
+    $(LOCAL_PATH)/keylayout/synaptics_dsx.kl:system/usr/keylayout/synaptics_dsx.kl \
     $(LOCAL_PATH)/keylayout/synaptics_rmi4_i2c.kl:system/usr/keylayout/synaptics_rmi4_i2c.kl \
-    $(LOCAL_PATH)/keylayout/Generic.kl:system/usr/keylayout/Generic.kl
+    $(LOCAL_PATH)/keylayout/sec_touchkey.kl:system/usr/keylayout/sec_touchkey.kl
 
 # Configurations
 PRODUCT_COPY_FILES += \
@@ -118,17 +123,9 @@ PRODUCT_PACKAGES += \
     libqservice \
     libtinyxml
 
-# libril_shim
-PRODUCT_PACKAGES += \
-    libril_shim
-
 # Power
 PRODUCT_PACKAGES += \
     power.msm8916
-
-# Lights
-PRODUCT_PACKAGES += \
-    lights.msm8916
 
 # Keystore
 PRODUCT_PACKAGES += \

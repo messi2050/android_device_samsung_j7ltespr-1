@@ -12,7 +12,7 @@
 # limitations under the License.
 
 LOCAL_PATH := $(call my-dir)
-SAMSUNG_TARGETS := fortuna3g fortunave3g fortunafz
+SAMSUNG_TARGETS := j7ltespr
  
 ifneq ($(filter $(SAMSUNG_TARGETS),$(TARGET_DEVICE)),)
 include $(all-subdir-makefiles)
