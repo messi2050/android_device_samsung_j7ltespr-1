@@ -203,6 +203,10 @@ PRODUCT_PACKAGES += \
     libstlport \
     libboringssl-compat
 
+# Shims
+PRODUCT_PACKAGES += \
+    libril_shim
+
 # SoftAP
 PRODUCT_PACKAGES += \
     libcurl \
