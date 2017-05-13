@@ -2,7 +2,7 @@ tima_measurement_info
 
 app/mcRegistry/07010000000000000000000000000000.tlbin
 app/mcRegistry/07050500000000000000000000000000.tlbin
-app/TimeService/TimeService.apk
+app/TimeService/TimeService.apk|9310ccd2c55a1729e60424c6e3bbbf7881d84d16
 
 bin/adsprpcd
 bin/btnvtool
