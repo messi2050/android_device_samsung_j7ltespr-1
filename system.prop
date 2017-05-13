@@ -26,6 +26,7 @@ ro.use_data_netmgrd=false
 persist.data.netmgrd.qos.enable=false
 
 # Display
+ro.sf.lcd_density=267
 ro.opengles.version=196608
 
 # Media
