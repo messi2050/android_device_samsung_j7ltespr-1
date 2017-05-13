@@ -132,7 +132,6 @@ AUDIO_FEATURE_ENABLED_FM             := true
 TARGET_HW_DISK_ENCRYPTION            := true
 
 # Power HAL
-TARGET_POWERHAL_SET_INTERACTIVE_EXT  := $(LOCAL_PATH)/power/power_ext.c
 TARGET_POWERHAL_VARIANT              := qcom
 
 # Vold
