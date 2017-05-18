@@ -58,7 +58,7 @@ BOARD_RAMDISK_OFFSET               := 0x02000000
 BOARD_KERNEL_TAGS_OFFSET           := 0x01e00000
 BOARD_KERNEL_PAGESIZE              := 2048
 BOARD_KERNEL_SEPARATED_DT          := true
-TARGET_KERNEL_SOURCE               := kernel/samsung/msm8929
+TARGET_KERNEL_SOURCE               := kernel/samsung/j7ltespr
 TARGET_KERNEL_CONFIG               := lineageos_j7ltespr_defconfig
 
 # Partition sizes
