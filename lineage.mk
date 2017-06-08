@@ -15,3 +15,5 @@ PRODUCT_NAME := lineage_j7ltespr
 PRODUCT_BRAND := samsung
 PRODUCT_MANUFACTURER := samsung
 PRODUCT_MODEL := SM-J700P
+
+PRODUCT_GMS_CLIENTID_BASE := android-samsung
