@@ -63,7 +63,7 @@ audio.offload.video=true
 
 # Wi-Fi, Bluetooth
 wifi.interface=wlan0
-ro.bluetooth.hfp.ver=1.6
+ro.bluetooth.hfp.ver=1.7
 ro.qualcomm.bt.hci_transport=smd
 ro.fm.transmitter=false
 

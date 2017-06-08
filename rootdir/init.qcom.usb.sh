@@ -27,6 +27,10 @@
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 #
+vbus_draw=`getprop persist.sys.usb.vbus.draw`
+if [ "$vbus_draw" != "" ]; then
+	echo "${vbus_draw}" > /sys/module/ci13xxx_msm/parameters/vbus_draw_mA
+fi
 chown -h root.system /sys/devices/platform/msm_hsusb/gadget/wakeup
 chmod -h 220 /sys/devices/platform/msm_hsusb/gadget/wakeup
 
@@ -118,8 +122,9 @@ case "$usb_config" in
               ;;
               *)
 		case "$target" in
-                        "msm8916")
-                            setprop persist.sys.usb.config diag,serial_smd,rmnet_bam,adb
+			"msm8916" | "msm8939" | "msm8929")
+				#setprop persist.sys.usb.config diag,serial_smd,rmnet_bam,adb
+				setprop persist.sys.usb.config mtp,adb
                         ;;
                         "msm8994")
                             setprop persist.sys.usb.config diag,serial_smd,serial_tty,rmnet_ipa,mass_storage,adb
@@ -214,7 +219,7 @@ esac
 cdromname="/system/etc/cdrom_install.iso"
 platformver=`cat /sys/devices/soc0/hw_platform`
 case "$target" in
-	"msm8226" | "msm8610" | "msm8916")
+	"msm8226" | "msm8610" | "msm8916" | "msm8909" | "msm8929")
 		case $platformver in
 			"QRD")
 				echo "mounting usbcdrom lun"
@@ -240,10 +245,13 @@ else
 	soc_id=`cat /sys/devices/system/soc/soc0/id`
 fi
 
-# enable rps cpus on msm8939 target
+# enable rps cpus on msm8939/msm8909/msm8929 target
 setprop sys.usb.rps_mask 0
 case "$soc_id" in
-	"239" | "241" | "263")
+	"239" | "241" | "263" | "268" | "269" | "270")
 		setprop sys.usb.rps_mask 10
+	;;
+	"245" | "258" | "259" | "265" | "275")
+		setprop sys.usb.rps_mask 4
 	;;
 esac
