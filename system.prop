@@ -20,6 +20,8 @@ ro.ril.multi_rat_capable=false
 persist.radio.flexmap_type=nw_mode
 ro.telephony.ril.config=simactivation
 ro.ril.telephony.mqanelements=6
+persist.radio.tdscdma_present=1
+ro.telephony.default_network=10
 
 # Data modules (For evolution RIL model)
 ro.use_data_netmgrd=false
