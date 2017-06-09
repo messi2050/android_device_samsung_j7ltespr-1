@@ -176,6 +176,11 @@ OVERRIDE_RS_DRIVER                    := libRSDriver.so
 TARGET_SCREEN_WIDTH                  := 720
 TARGET_SCREEN_HEIGHT                 := 1280
 
+# NFC
+BOARD_NFC_HAL_SUFFIX := msm8916
+BOARD_NFC_DEVICE := "/dev/pn547"
+NFC_NXP_CHIP_TYPE := 2
+
 # Recovery
 TARGET_RECOVERY_FSTAB                := $(LOCAL_PATH)/rootdir/fstab.qcom
 TARGET_USERIMAGES_USE_EXT4           := true
