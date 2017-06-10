@@ -114,6 +114,9 @@ EXTENDED_FONT_FOOTPRINT              := true
 MALLOC_IMPL                          := dlmalloc
 
 # Audio
+AUDIO_FEATURE_ENABLED_KPI_OPTIMIZE := true
+AUDIO_FEATURE_ENABLED_MULTI_VOICE_SESSIONS := true
+BOARD_SUPPORTS_SOUND_TRIGGER := true
 BOARD_USES_ALSA_AUDIO                := true
 USE_CUSTOM_AUDIO_POLICY              := 1
 TARGET_QCOM_AUDIO_VARIANT            := caf
