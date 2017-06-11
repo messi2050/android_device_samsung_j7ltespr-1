@@ -222,8 +222,7 @@ PRODUCT_PACKAGES += \
 
 # Misc. libs
 PRODUCT_PACKAGES += \
-    libstlport \
-    libboringssl-compat
+    libstlport
 
 # SoftAP
 PRODUCT_PACKAGES += \
