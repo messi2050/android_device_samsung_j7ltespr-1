@@ -129,7 +129,10 @@ BACKLIGHT_PATH                       := "/sys/class/leds/lcd-backlight/brightnes
 CHARGING_ENABLED_PATH                := /sys/class/power_supply/battery/batt_lp_charging
 
 # Enable QCOM FM feature
+AUDIO_FEATURE_ENABLED_FM_POWER_OPT   := true
 AUDIO_FEATURE_ENABLED_FM             := true
+BOARD_HAVE_QCOM_FM                   := true
+TARGET_QCOM_NO_FM_FIRMWARE           := true
 
 # Enable HW based full disk encryption
 TARGET_HW_DISK_ENCRYPTION            := true
