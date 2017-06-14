@@ -19,6 +19,8 @@
 # inherit from the proprietary version
 -include vendor/samsung/j7ltespr/AndroidBoardVendor.mk
 
+TARGET_SPECIFIC_HEADER_PATH := $(LOCAL_PATH)/include
+
 TARGET_OTA_ASSERT_DEVICE := j7ltespr,SM-J700P,J700P
 
 # PATH
