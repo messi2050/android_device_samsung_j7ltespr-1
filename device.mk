@@ -189,8 +189,12 @@ PRODUCT_PACKAGES += \
     libqcomfm_jni \
     qcom.fmradio
 
-PRODUCT_PROPERTY_OVERRIDES += \
-    hw.fm.internal_antenna=true
+ADDITIONAL_BUILD_PROPERTIES += \
+    hw.fm.internal_antenna=true \
+    hw.fm.mode=normal
+
+PRODUCT_BOOT_JARS += \
+    qcom.fmradio
 
 # IPv6 tethering
 PRODUCT_PACKAGES += \
