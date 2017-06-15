@@ -130,6 +130,10 @@ BOARD_CHARGING_MODE_BOOTING_LPM      := /sys/class/power_supply/battery/batt_lp_
 BACKLIGHT_PATH                       := "/sys/class/leds/lcd-backlight/brightness"
 CHARGING_ENABLED_PATH                := /sys/class/power_supply/battery/batt_lp_charging
 
+# GPS
+USE_DEVICE_SPECIFIC_GPS := true
+TARGET_NO_RPC := true
+
 # Enable QCOM FM feature
 AUDIO_FEATURE_ENABLED_FM_POWER_OPT   := true
 AUDIO_FEATURE_ENABLED_FM             := true
